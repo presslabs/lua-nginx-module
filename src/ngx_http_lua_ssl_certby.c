@@ -199,6 +199,8 @@ ngx_http_lua_ssl_cert_handler(ngx_ssl_conn_t *ssl_conn, void *data)
     ngx_http_lua_ssl_ctx_t          *cctx;
     ngx_http_core_srv_conf_t        *cscf;
 
+    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cctx->connection->log, 0, "AICI 0");
+
     c = ngx_ssl_get_connection(ssl_conn);
 
     ngx_log_debug1(NGX_LOG_DEBUG_HTTP, c->log, 0,
@@ -207,6 +209,9 @@ ngx_http_lua_ssl_cert_handler(ngx_ssl_conn_t *ssl_conn, void *data)
     cctx = ngx_http_lua_ssl_get_ctx(c->ssl->connection);
 
     dd("ssl cert handler, cert-ctx=%p", cctx);
+
+
+    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cctx->connection->log, 0, "AICI 1");
 
     if (cctx && cctx->entered_cert_handler) {
         /* not the first time */
@@ -222,6 +227,9 @@ ngx_http_lua_ssl_cert_handler(ngx_ssl_conn_t *ssl_conn, void *data)
 
         return -1;
     }
+
+
+    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cctx->connection->log, 0, "AICI 2");
 
     dd("first time");
 
@@ -242,6 +250,9 @@ ngx_http_lua_ssl_cert_handler(ngx_ssl_conn_t *ssl_conn, void *data)
     fc->addr_text = c->addr_text;
     fc->listening = c->listening;
 
+    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cctx->connection->log, 0, "AICI 3");
+
+
     r = ngx_http_lua_create_fake_request(fc);
     if (r == NULL) {
         goto failed;
@@ -256,6 +267,9 @@ ngx_http_lua_ssl_cert_handler(ngx_ssl_conn_t *ssl_conn, void *data)
     fc->ssl = c->ssl;
 
     clcf = ngx_http_get_module_loc_conf(r, ngx_http_core_module);
+
+
+    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cctx->connection->log, 0, "AICI 4");
 
 #if (nginx_version >= 1009000)
     ngx_set_connection_log(fc, clcf->error_log);
@@ -272,6 +286,9 @@ ngx_http_lua_ssl_cert_handler(ngx_ssl_conn_t *ssl_conn, void *data)
 
         cctx->ctx_ref = LUA_NOREF;
     }
+
+
+    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cctx->connection->log, 0, "AICI 5");
 
     cctx->exit_code = 1;  /* successful by default */
     cctx->connection = c;
@@ -290,6 +307,9 @@ ngx_http_lua_ssl_cert_handler(ngx_ssl_conn_t *ssl_conn, void *data)
 
     lscf = ngx_http_get_module_srv_conf(r, ngx_http_lua_module);
 
+
+    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cctx->connection->log, 0, "AICI 6");
+
     /* TODO honor lua_code_cache off */
     L = ngx_http_lua_get_lua_vm(r, NULL);
 
@@ -304,6 +324,9 @@ ngx_http_lua_ssl_cert_handler(ngx_ssl_conn_t *ssl_conn, void *data)
 
         goto failed;
     }
+
+
+    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cctx->connection->log, 0, "AICI 7");
 
     rc = lscf->srv.ssl_cert_handler(r, lscf, L);
 
@@ -321,6 +344,9 @@ ngx_http_lua_ssl_cert_handler(ngx_ssl_conn_t *ssl_conn, void *data)
         c->log->action = "SSL handshaking";
         return cctx->exit_code;
     }
+
+
+    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cctx->connection->log, 0, "AICI 8");
 
     /* rc == NGX_DONE */
 
@@ -342,6 +368,9 @@ ngx_http_lua_ssl_cert_handler(ngx_ssl_conn_t *ssl_conn, void *data)
         cctx->cleanup = &cln->handler;
     }
 
+
+    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cctx->connection->log, 0, "AICI 9");
+
     *cctx->cleanup = ngx_http_lua_ssl_cert_aborted;
 
     return -1;
@@ -356,6 +385,9 @@ failed:
     if (fc) {
         ngx_http_lua_close_fake_connection(fc);
     }
+
+
+    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cctx->connection->log, 0, "AICI 10");
 
     return 0;
 #endif
