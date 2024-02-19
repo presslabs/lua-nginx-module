@@ -199,10 +199,10 @@ ngx_http_lua_ssl_cert_handler(ngx_ssl_conn_t *ssl_conn, void *data)
     ngx_http_lua_ssl_ctx_t          *cctx;
     ngx_http_core_srv_conf_t        *cscf;
 
-    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, c->log, 0, "AICI 0");
 
     c = ngx_ssl_get_connection(ssl_conn);
 
+    ngx_log_debug1(NGX_LOG_DEBUG_HTTP, c->log, 0, "aici 000");
     ngx_log_debug1(NGX_LOG_DEBUG_HTTP, c->log, 0,
                    "ssl cert: connection reusable: %ud", c->reusable);
 
@@ -211,7 +211,7 @@ ngx_http_lua_ssl_cert_handler(ngx_ssl_conn_t *ssl_conn, void *data)
     dd("ssl cert handler, cert-ctx=%p", cctx);
 
 
-    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, c->log, 0, "AICI 1", c->reusable);
+//    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, c->log, 0, "AICI 1", c->reusable);
 
     if (cctx && cctx->entered_cert_handler) {
         /* not the first time */
@@ -313,6 +313,8 @@ ngx_http_lua_ssl_cert_handler(ngx_ssl_conn_t *ssl_conn, void *data)
     /* TODO honor lua_code_cache off */
     L = ngx_http_lua_get_lua_vm(r, NULL);
 
+    // TODO: ajunge aici
+
     c->log->action = "loading SSL certificate by lua";
 
     if (lscf->srv.ssl_cert_handler == NULL) {
@@ -326,9 +328,10 @@ ngx_http_lua_ssl_cert_handler(ngx_ssl_conn_t *ssl_conn, void *data)
     }
 
 
-//    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, c->log, 0, "AICI 7");
 
     rc = lscf->srv.ssl_cert_handler(r, lscf, L);
+
+    ngx_log_debug2(NGX_LOG_DEBUG_HTTP, c->log, 0, "AICI 7: %d", rc);
 
     if (rc >= NGX_OK || rc == NGX_ERROR) {
         cctx->done = 1;
