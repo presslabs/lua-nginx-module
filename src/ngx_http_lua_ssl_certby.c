@@ -331,7 +331,7 @@ ngx_http_lua_ssl_cert_handler(ngx_ssl_conn_t *ssl_conn, void *data)
 
     rc = lscf->srv.ssl_cert_handler(r, lscf, L);
 
-    ngx_log_debug2(NGX_LOG_DEBUG_HTTP, c->log, 0, "AICI 7: %d", rc);
+    ngx_log_debug1(NGX_LOG_DEBUG_HTTP, c->log, 0, "AICI 7: %d", rc);
 
     if (rc >= NGX_OK || rc == NGX_ERROR) {
         cctx->done = 1;
