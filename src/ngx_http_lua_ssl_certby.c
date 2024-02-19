@@ -330,7 +330,7 @@ ngx_http_lua_ssl_cert_handler(ngx_ssl_conn_t *ssl_conn, void *data)
 
     rc = lscf->srv.ssl_cert_handler(r, lscf, L);
 
-    ngx_log_debug1(NGX_LOG_DEBUG_HTTP, c->log, 0, "AICI 7: %d", rc);
+    ngx_log_debug1(NGX_LOG_DEBUG_HTTP, c->log, 0, "AICI 7: %d %d %d", rc, NGX_OK, NGX_ERROR);
 
     if (rc >= NGX_OK || rc == NGX_ERROR) {
         cctx->done = 1;
@@ -347,10 +347,9 @@ ngx_http_lua_ssl_cert_handler(ngx_ssl_conn_t *ssl_conn, void *data)
         return cctx->exit_code;
     }
 
-
-//    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, c->log, 0, "AICI 8");
-
     /* rc == NGX_DONE */
+
+    ngx_log_debug1(NGX_LOG_DEBUG_HTTP, c->log, 0, "AICI 8: %d", 0);
 
     cln = ngx_pool_cleanup_add(fc->pool, 0);
     if (cln == NULL) {
@@ -359,6 +358,9 @@ ngx_http_lua_ssl_cert_handler(ngx_ssl_conn_t *ssl_conn, void *data)
 
     cln->handler = ngx_http_lua_ssl_cert_done;
     cln->data = cctx;
+
+    ngx_log_debug1(NGX_LOG_DEBUG_HTTP, c->log, 0, "AICI 9: %d", 0);
+
 
     if (cctx->cleanup == NULL) {
         cln = ngx_pool_cleanup_add(c->pool, 0);
@@ -370,10 +372,12 @@ ngx_http_lua_ssl_cert_handler(ngx_ssl_conn_t *ssl_conn, void *data)
         cctx->cleanup = &cln->handler;
     }
 
-
-//    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, c->log, 0, "AICI 9");
+    ngx_log_debug1(NGX_LOG_DEBUG_HTTP, c->log, 0, "AICI 10: %d", 0);
 
     *cctx->cleanup = ngx_http_lua_ssl_cert_aborted;
+
+    ngx_log_debug1(NGX_LOG_DEBUG_HTTP, c->log, 0, "AICI 11: %d", 0);
+
 
     return -1;
 
