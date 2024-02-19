@@ -202,7 +202,6 @@ ngx_http_lua_ssl_cert_handler(ngx_ssl_conn_t *ssl_conn, void *data)
 
     c = ngx_ssl_get_connection(ssl_conn);
 
-    ngx_log_debug1(NGX_LOG_DEBUG_HTTP, c->log, 0, "aici 000");
     ngx_log_debug1(NGX_LOG_DEBUG_HTTP, c->log, 0,
                    "ssl cert: connection reusable: %ud", c->reusable);
 
